@@ -1,6 +1,6 @@
 <?php
 
-require('../vendor/autoload.php');
+require '../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +12,7 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => 'php://stderr',
 ));
 
-$app->before(function (Request $request) use($bot) {
+$app->before(function (Request $request) use ($bot) {
     // Signature validation
     $request_body = $request->getContent();
     $signature = $request->headers->get('X-LINE-CHANNELSIGNATURE');
@@ -31,10 +31,50 @@ $app->post('/callback', function (Request $request) use ($app, $bot) {
         $content = $obj['content'];
 
         if ($content['text']) {
-            $bot->sendText($from, sprintf('%sじゃない', $content['text'])); 
+            date_default_timezone_set('Asia/Tokyo');
+            $now = date('Y-m-d H:i');
+            $today = time();
+            if (stristr($content['text'], 'gga') !== false) {
+                if (stristr($content['text'], 'あと') !== false) {
+                    $gga = strtotime('20161006');
+                    $int = $gga - $today;
+                    $day = ceil($int / (24 * 60 * 60));
+                    $week = ceil($day / 7);
+                    $format = '今は%sで、GGAまであと%s日です。あと%s週間です。';
+                    $message = sprintf($format, $now, $day, $week);
+                    if ($day > 0) {
+                        $bot->sendText($from,$message);
+                    } else {
+                      $bot->sendText($from,'GGAはおわったよ！');
+                    }
+                } else {
+                  $bot->sendText($from,'GGAはたぶん10月6日です(・ω・)');
+                }
+            } else {
+              $bot->sendText($from,sprintf('%sなんですね～', $content['text']));
+            }
+
+            if (stristr($content['text'], '提出') !== false) {
+                if (stristr($content['text'], 'あと') !== false) {
+                    $teishutu = strtotime('20160915');
+                    $int = $teishutu - $today;
+                    $day = ceil($int / (24 * 60 * 60));
+                    $week = ceil($day / 7);
+                    $format = '今は%sで、提出まであと%s日です。あと%s週間です。';
+                    $message = sprintf($format, $now, $day, $week);
+                    if ($day > 0) {
+                      $bot->sendText($from,$message);
+                    } else {
+                      $bot->sendText($from,'提出日はすぎてるよ！');
+                    }
+                } else {
+                    $bot->sendText($from,'提出は9月15日です(・ω・´)');
+                }
+            } else {
+              $bot->sendText($from,sprintf('%sなんですね～', $content['text']));
+            }
         }
     }
-
     return 0;
 });
 
