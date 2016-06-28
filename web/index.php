@@ -41,7 +41,7 @@ $app->post('/callback', function (Request $request) use ($app, $bot) {
                     $day = ceil($int / (24 * 60 * 60));
                     $week = ceil($day / 7);
                     $format = 'GGAまであと%s日（%s週間）です。';
-                    $message = sprintf($format, $now, $day, $week);
+                    $message = sprintf($format, $day, $week);
                     if ($day > 0) {
                         $bot->sendText($from,$message);
                     } else {
@@ -63,7 +63,7 @@ $app->post('/callback', function (Request $request) use ($app, $bot) {
                     $day = ceil($int / (24 * 60 * 60));
                     $week = ceil($day / 7);
                     $format = '提出まであと%s日(%s週間)です。';
-                    $message = sprintf($format, $now, $day, $week);
+                    $message = sprintf($format, $day, $week);
                     if ($day > 0) {
                       $bot->sendText($from,$message);
                     } else {
