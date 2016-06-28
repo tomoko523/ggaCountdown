@@ -40,7 +40,7 @@ $app->post('/callback', function (Request $request) use ($app, $bot) {
                     $int = $gga - $today;
                     $day = ceil($int / (24 * 60 * 60));
                     $week = ceil($day / 7);
-                    $format = '今は%sで、GGAまであと%s日です。あと%s週間です。';
+                    $format = 'GGAまであと%s日です。あと%s週間です。';
                     $message = sprintf($format, $now, $day, $week);
                     if ($day > 0) {
                         $bot->sendText($from,$message);
@@ -50,8 +50,10 @@ $app->post('/callback', function (Request $request) use ($app, $bot) {
                 } else {
                   $bot->sendText($from,'GGAはたぶん10月6日です(・ω・)');
                 }
+                return 0;
             } else {
               $bot->sendText($from,sprintf('%sなんですね～', $content['text']));
+              return 0;
             }
 
             if (stristr($content['text'], '提出') !== false) {
